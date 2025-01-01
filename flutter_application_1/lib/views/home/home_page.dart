@@ -9,7 +9,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List components = [const OverAllComponent(), const AddComponent()];
+    List components = [const OverAllComponent(), AddComponent()];
     NavigationController controller = Get.put(NavigationController());
 
     return Scaffold(
