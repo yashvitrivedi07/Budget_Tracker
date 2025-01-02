@@ -1,32 +1,44 @@
+import 'dart:developer';
+
 import 'package:sqflite/sqflite.dart';
 
 class DataBaseHelper {
-  static DataBaseHelper dbh = DataBaseHelper._();
   DataBaseHelper._();
+
+  static DataBaseHelper dbh = DataBaseHelper._();
+
   Database? database;
   String? tName = "category";
   String? cName = "category_name";
 
-  void initdb() async {
+  Future<void> initdb() async {
     String path = await getDatabasesPath();
     String fpath = "${path}budget_tracker.db";
 
     database = await openDatabase(
       fpath,
       version: 1,
-      onCreate: (db, _) {
+      onCreate: (db, _) async {
         String q = '''CREATE TABLE $tName (
-        category_id INTEGER PRIMARY KEY,
-        $cName TEXT NOT NULL,
-        )''';
-        database?.execute(q);
+        category_id INTEGER PRIMARY KEY AUTOINCREMENT,
+        $cName TEXT NOT NULL
+        );''';
+        await db.execute(q).then(
+          (value) {
+            log("Category table is created....");
+          },
+        ).onError(
+          (error, _) {
+            log("Caregory table is creation failed  $error....");
+          },
+        );
       },
     );
   }
 
-  Future<Future<int>?> insertData(String name) async {
-    initdb();
-    String q = "INSERT INTO $tName ($cName) Values(?)";
-    return database?.rawInsert(q, [name]);
+  Future<int?> insertData(String name) async {
+    await initdb();
+    String q = "INSERT INTO $tName ($cName) VALUES(?)";
+    return await database?.rawInsert(q, [name]);
   }
 }

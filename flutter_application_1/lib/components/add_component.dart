@@ -14,39 +14,38 @@ class AddComponent extends StatelessWidget {
       child: InkWell(
         onTap: () {
           showBottomSheet(
-            context: context,
-            builder: (context) {
-              return BottomSheet(
-                onClosing: () {
+              context: context,
+              builder: (context) {
+                return BottomSheet(onClosing: () {
                   Get.back();
-                },
-                builder: (context) {
+                }, builder: (context) {
                   return Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       DropdownMenu(
                         onSelected: (value) {
-                          controller.isselected.value = true;
-                          controller.category?.value = value;
+                          controller.getData(value: value);
                         },
                         dropdownMenuEntries: controller.categories.map((item) {
                           return DropdownMenuEntry(value: item, label: item);
                         }).toList(),
                       ),
-                      Visibility(
+                      Obx(() {
+                        return Visibility(
                           visible: controller.isselected.value == true,
                           child: IconButton(
-                              onPressed: () {
-                                DataBaseHelper.dbh
-                                    .insertData(controller.category!.value);
-                              },
-                              icon: const Icon(Icons.add)))
+                            onPressed: () {
+                              var res = DataBaseHelper.dbh
+                                  .insertData(controller.category!.value);
+                            },
+                            icon: const Icon(Icons.add),
+                          ),
+                        );
+                      })
                     ],
                   );
-                },
-              );
-            },
-          );
+                });
+              });
         },
         child: Image.asset(
           'assets/images/calculator_15256701.png',

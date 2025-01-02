@@ -29,5 +29,10 @@ class CategoryController extends GetxController {
   ];
 
   RxBool isselected = false.obs;
-  RxString? category;
+  RxString category = "".obs;
+
+  void getData({required String value}) {
+    isselected.value = true;
+    category.value = value;
+  }
 }
